@@ -55,8 +55,8 @@ func SetErrNotifyUrl(s string) {
 
 // Recover returns a middleware which recovers from panics anywhere in the chain
 // and handles the control to the centralized HTTPErrorHandler.
-func Recover(config *RecoverConfig) echo.MiddlewareFunc {
-	return RecoverWithConfig(config)
+func Recover() echo.MiddlewareFunc {
+	return RecoverWithConfig(&defaultRecoverConfig)
 }
 
 // RecoverWithConfig returns a Recover middleware with config.

@@ -87,6 +87,12 @@ func (s Server) Start() error {
 	return nil
 }
 
+// Stop 直接退出
+func (s Server) Stop() {
+	_ = s.FadeAway()
+	s.Server.Stop()
+}
+
 // GracefulStop 优雅退出
 func (s Server) GracefulStop() {
 	_ = s.FadeAway()

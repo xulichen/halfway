@@ -1,0 +1,69 @@
+golang-base:
+  env: local
+  http-port: "13831"
+golang-consul:
+  host: 127.0.0.1
+  port: "8500"
+  token: XXXXXXXXXXXXXXXXXX
+golang-golang-server:
+  golang-audiocat: "13831"
+  golang-dinghomework: "13831"
+  http-port: "13831"
+  rpc-port: "13832"
+golang-mysql:
+  char: utf8mb4
+  db: hx
+  host: 127.0.0.1
+  password: Sy9rYTVPTnQrRSt1UlI4
+  port: "3307"
+  user: fordevtest
+golang-mysql-bat:
+  char: utf8mb4
+  db: hx
+  host: 127.0.0.1
+  password: qBs!c27Mqw
+  port: "3307"
+  user: root
+golang-oss:
+  access-key-id: XXXXXXXXXXXXXXXXXX
+  access-key-secret: XXXXXXXXXXXXXXXXXX
+  bucket-name: XXXXXXXXXXXXXXXXXX
+  endpoint: XXXXXXXXXXXXXXXXXX
+  role-arn: XXXXXXXXXXXXXXXXXX
+golang-redis-data:
+  host: 127.0.0.1
+  match-host: 127.0.0.1
+  password: ""
+  port: "6379"
+golang-redis-key:
+  host: 127.0.0.1
+  match-host: 127.0.0.1
+  password: ""
+  port: "6379"
+python-amqp:
+  access-key-id: XXXXXXXXXXXXXXXXXX
+  access-key-secret: XXXXXXXXXXXXXXXXXX
+  address: XXXXXXXXXXXXXXXXXX
+  instance-id: "1311815769081703"
+python-base:
+  env: test
+  port: "5000"
+python-cdn:
+  url1: sc1.hexiaoxiang.com
+  url2: sc2.hexiaoxiang.com
+  url3: sc3.hexiaoxiang.com
+python-consul:
+  host: consul-server.default.svc.cluster.local
+  port: "8500"
+  token: XXXXXXXXXXXXXXXXXX
+python-es:
+  host: XXXXXXXXXXXXXXXXXX
+  password: 7f94H&lhgZ8a
+  port: "9200"
+  user: bizdev
+python-golang-auth:
+  host: test-hxx-file-auth.default.svc.cluster.local
+  port: "13831"
+python-golang-course:
+  host: test-hxx-file-course.default.svc.cluster.local
+  port: "13831"

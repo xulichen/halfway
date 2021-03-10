@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-redis/redis/v8 v8.4.2
 	github.com/google/uuid v1.1.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/hashicorp/consul/api v1.1.0
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/labstack/gommon v0.3.0
@@ -17,9 +18,11 @@ require (
 	github.com/ulule/limiter/v3 v3.8.0
 	github.com/valyala/fasttemplate v1.2.1
 	go.elastic.co/apm v1.11.0
+	go.elastic.co/apm/module/apmechov4 v1.11.0
 	go.elastic.co/apm/module/apmgoredisv8 v1.11.0
 	go.elastic.co/apm/module/apmgormv2 v1.11.0
 	go.elastic.co/apm/module/apmgrpc v1.11.0
+	go.elastic.co/apm/module/apmhttp v1.11.0
 	go.uber.org/zap v1.16.0
 	google.golang.org/grpc v1.33.2
 	google.golang.org/grpc/examples v0.0.0-20210309220351-d5b628860d4e // indirect
