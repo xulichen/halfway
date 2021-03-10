@@ -2,11 +2,13 @@ package middleware
 
 import (
 	"fmt"
+	"runtime"
+
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	l "github.com/xulichen/halfway/pkg/log"
 	"github.com/xulichen/halfway/pkg/utils"
-	"runtime"
 )
 
 type (
@@ -84,17 +86,17 @@ func RecoverWithConfig(config *RecoverConfig) echo.MiddlewareFunc {
 						_ = utils.SendDingMsgWithUrl(errNotifyUrl, msg, true)
 						switch config.LogLevel {
 						case log.DEBUG:
-							utils.GetLogger().Debug(msg)
+							l.GetLogger().Debug(msg)
 						case log.INFO:
-							utils.GetLogger().Info(msg)
+							l.GetLogger().Info(msg)
 						case log.WARN:
-							utils.GetLogger().Warn(msg)
+							l.GetLogger().Warn(msg)
 						case log.ERROR:
-							utils.GetLogger().Error(msg)
+							l.GetLogger().Error(msg)
 						case log.OFF:
 							// None.
 						default:
-							utils.GetLogger().Print(msg)
+							l.GetLogger().Print(msg)
 						}
 					}
 					c.Error(err)

@@ -3,15 +3,33 @@ package db
 import (
 	"fmt"
 	"log"
+	"time"
 
 	apmmysql "go.elastic.co/apm/module/apmgormv2/driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"github.com/xulichen/halfway/pkg/config"
 )
 
+type MySqlConfig struct {
+	DNS string `json:"dns"`
+	// Host Port User Password DB build DNS
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	DB       string `json:"db"`
+	// Debug开关
+	Debug bool `json:"debug" yaml:"debug" default:"false"`
+	// 最大空闲连接数
+	MaxIdleConns int `json:"maxIdleConns" yaml:"maxIdleConns" default:"10"`
+	// 最大活动连接数
+	MaxOpenConns int `json:"maxOpenConns" yaml:"maxOpenConns" default:"100"`
+	// 连接的最大存活时间
+	ConnMaxLifetime time.Duration `json:"connMaxLifetime" yaml:"connMaxLifetime" default:"0"`
+}
+
 // NewDBWithAPM 初始化 MySQL 链接
-func NewDBWithAPM(cf *config.MySqlConfig) *gorm.DB {
+func NewDBWithAPM(cf *MySqlConfig) *gorm.DB {
 	log.Println("connecting MySQL ... ", cf.Host,
 		cf.Port,
 		cf.DB)
@@ -24,12 +42,28 @@ func NewDBWithAPM(cf *config.MySqlConfig) *gorm.DB {
 	if mdb == nil {
 		panic("failed to connect database")
 	}
+	if cf.Debug {
+		mdb = mdb.Debug()
+	}
+	if cf.MaxIdleConns > 0 {
+		sqlDB, _ := mdb.DB()
+		sqlDB.SetMaxIdleConns(cf.MaxIdleConns)
+	}
+	if cf.MaxOpenConns > 0 {
+		sqlDB, _ := mdb.DB()
+		sqlDB.SetMaxOpenConns(cf.MaxOpenConns)
+	}
+	if cf.ConnMaxLifetime > 0 {
+		sqlDB, _ := mdb.DB()
+		sqlDB.SetConnMaxLifetime(cf.ConnMaxLifetime)
+	}
+
 	log.Println("connected")
 	return mdb
 }
 
 // NewDB 初始化 MySQL 链接
-func NewDB(cf *config.MySqlConfig) *gorm.DB {
+func NewDB(cf *MySqlConfig) *gorm.DB {
 	log.Println("connecting MySQL ... ", cf.Host,
 		cf.Port,
 		cf.DB)
@@ -42,12 +76,21 @@ func NewDB(cf *config.MySqlConfig) *gorm.DB {
 	if mdb == nil {
 		panic("failed to connect database")
 	}
+	if cf.Debug {
+		mdb = mdb.Debug()
+	}
+	if cf.MaxIdleConns > 0 {
+		sqlDB, _ := mdb.DB()
+		sqlDB.SetMaxIdleConns(cf.MaxIdleConns)
+	}
+	if cf.MaxOpenConns > 0 {
+		sqlDB, _ := mdb.DB()
+		sqlDB.SetMaxOpenConns(cf.MaxOpenConns)
+	}
+	if cf.ConnMaxLifetime > 0 {
+		sqlDB, _ := mdb.DB()
+		sqlDB.SetConnMaxLifetime(cf.ConnMaxLifetime)
+	}
 	log.Println("connected")
 	return mdb
-}
-
-// SetDebug ...
-func SetDebug(db *gorm.DB, on bool) *gorm.DB {
-	db = db.Debug()
-	return db
 }

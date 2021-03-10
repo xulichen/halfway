@@ -4,12 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"github.com/labstack/echo/v4"
-	echoMiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/color"
-	"github.com/valyala/fasttemplate"
-	"go.uber.org/zap"
-	"github.com/xulichen/halfway/pkg/log"
 	"io"
 	"io/ioutil"
 	"net"
@@ -17,6 +11,13 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/color"
+	"github.com/valyala/fasttemplate"
+	"github.com/xulichen/halfway/pkg/log"
+	"go.uber.org/zap"
 )
 
 type (

@@ -6,32 +6,12 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	zhTranslations "github.com/go-playground/validator/translations/zh"
 	"github.com/labstack/echo/v4"
+	"github.com/xulichen/halfway/pkg/utils"
 	"gopkg.in/go-playground/validator.v9"
-	"strings"
 )
 
-type (
-	// CustomBinder 自定bind
-	CustomBinder struct{}
-
-	// CustomValidator 自定义验证器结构体
-	CustomValidator struct {
-		validate *validator.Validate
-		trans    ut.Translator
-	}
-)
-
-// 自定义验证器
-func (c *CustomValidator) Validate(i interface{}) error {
-	if err := c.validate.Struct(i); err != nil {
-		var errList []string
-		for _, e := range err.(validator.ValidationErrors) {
-			errList = append(errList, e.Translate(c.trans))
-		}
-		return fmt.Errorf("%s", strings.Join(errList, "|"))
-	}
-	return nil
-}
+// CustomBinder 自定bind
+type CustomBinder struct{}
 
 // Bind 自定义bind
 func (cb *CustomBinder) Bind(i interface{}, e echo.Context) (err error) {
@@ -53,6 +33,6 @@ func InitValidate(e *echo.Echo) {
 	if err := zhTranslations.RegisterDefaultTranslations(validate, trans); err != nil {
 		panic("注册本地化验证错误失败")
 	}
-	e.Validator = &CustomValidator{validate: validate, trans: trans}
+	e.Validator = utils.NewValidator()
 	e.Binder = new(CustomBinder)
 }

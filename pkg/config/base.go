@@ -1,20 +1,18 @@
 package config
 
+import "github.com/spf13/viper"
+
 type BaseConfig struct {
-	ENV      string
-	HttpPort string
-	RpcPort  string
-	Service  string
+	ENV         string
+	HttpPort    string
+	RpcPort     string
+	ServiceName string
 }
 
-func NewBaseConfig(s string) *BaseConfig {
-	m := ConfigMap[s]
-	if m != nil {
-		return &BaseConfig{
-			ENV:      m["env"].(string),
-			HttpPort: m["http-port"].(string),
-			RpcPort:  m["rpc-port"].(string),
-		}
+func NewBaseConfig() *BaseConfig {
+	return &BaseConfig{
+		ENV:      viper.GetString("golang-base.env"),
+		HttpPort: viper.GetString("golang-base.http-port"),
+		RpcPort:  viper.GetString("golang-base.rpc-port"),
 	}
-	return nil
 }

@@ -3,11 +3,12 @@ package log
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/xulichen/halfway/pkg/consts"
 	"go.elastic.co/apm"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"github.com/xulichen/halfway/pkg/consts"
-	"time"
 )
 
 var logger = NewLogger(Config{})
@@ -173,4 +174,3 @@ func InjectCtx(l *zap.Logger, ctx context.Context) *zap.Logger {
 	}
 	return l
 }
-

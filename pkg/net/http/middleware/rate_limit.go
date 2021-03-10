@@ -2,15 +2,16 @@ package middleware
 
 import (
 	"fmt"
+	"github.com/xulichen/halfway/pkg/log"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/ulule/limiter/v3"
 	"github.com/ulule/limiter/v3/drivers/store/memory"
 	"github.com/ulule/limiter/v3/drivers/store/redis"
 	"github.com/xulichen/halfway/pkg/consts"
-	"github.com/xulichen/halfway/pkg/utils"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 type LimitStoreOptionsConfig struct {
@@ -74,7 +75,7 @@ func RouteReachedLimitGlobal(limit int64, period time.Duration) echo.MiddlewareF
 			// 接口是否达到限流
 			ctx, err := apiLimiter.Get(c.Request().Context(), fmt.Sprintf("%s_%s", c.Request().URL.Path, c.Request().Method))
 			if err != nil {
-				utils.GetLogger().Errorf("限流器异常 - err: %v, %s on %s", err, ctx, c.Request().URL)
+				log.GetLogger().Errorf("限流器异常 - err: %v, %s on %s", err, ctx, c.Request().URL)
 				return next(c)
 			}
 			h := c.Response().Header()
@@ -82,7 +83,7 @@ func RouteReachedLimitGlobal(limit int64, period time.Duration) echo.MiddlewareF
 			h.Set("X-RateLimit-Remaining", strconv.FormatInt(ctx.Remaining, 10))
 			h.Set("X-RateLimit-Reset", strconv.FormatInt(ctx.Reset, 10))
 			if ctx.Reached { // 钉钉调用已到上限
-				utils.GetLogger().Errorf(" %s is failed reached limit. limit is %d, remaining is %d, reset is %d", c.Request().URL, ctx.Limit, ctx.Remaining, ctx.Reset)
+				log.GetLogger().Errorf(" %s is failed reached limit. limit is %d, remaining is %d, reset is %d", c.Request().URL, ctx.Limit, ctx.Remaining, ctx.Reset)
 				return c.JSON(http.StatusTooManyRequests, echo.Map{
 					"code": consts.ResponseCodeErrParameter,
 					"msg":  consts.ResponseRateLimitReachedStatusText,
@@ -102,7 +103,7 @@ func RouteReachedLimitLocal(limit int64, period time.Duration) echo.MiddlewareFu
 			// 接口是否达到限流
 			ctx, err := apiLimiter.Get(c.Request().Context(), fmt.Sprintf("%s_%s", c.Request().URL.Path, c.Request().Method))
 			if err != nil {
-				utils.GetLogger().Errorf("限流器异常 - err: %v, %s on %s", err, ctx, c.Request().URL)
+				log.GetLogger().Errorf("限流器异常 - err: %v, %s on %s", err, ctx, c.Request().URL)
 				return next(c)
 			}
 			h := c.Response().Header()
@@ -129,7 +130,7 @@ func RouteUserLimitGlobal(limit int64, period time.Duration) echo.MiddlewareFunc
 			// 接口是否达到限流
 			ctx, err := apiLimiter.Get(c.Request().Context(), c.Request().Header.Get("Authorization"))
 			if err != nil {
-				utils.GetLogger().Errorf("限流器异常 - err: %v, %s on %s", err, ctx, c.Request().URL)
+				log.GetLogger().Errorf("限流器异常 - err: %v, %s on %s", err, ctx, c.Request().URL)
 				return next(c)
 			}
 			h := c.Response().Header()

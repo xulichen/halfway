@@ -2,12 +2,14 @@ package http
 
 import (
 	"bytes"
-	"github.com/labstack/echo/v4"
-	"google.golang.org/grpc/metadata"
 	"net/http"
 	"reflect"
+
+	"github.com/labstack/echo/v4"
+	"google.golang.org/grpc/metadata"
 )
 
+// GRPCProxyWrapper from douyu.jupiter 把 go grpc 函数封装成 echo HandlerFunc
 func GRPCProxyWrapper(h interface{}) echo.HandlerFunc {
 	v := reflect.ValueOf(h)
 	t := v.Type()
@@ -43,4 +45,3 @@ func GRPCProxyWrapper(h interface{}) echo.HandlerFunc {
 		return c.JSON(http.StatusOK, resp.Interface())
 	}
 }
-

@@ -8,4 +8,3 @@ var (
 	// ErrInternalServerError 抛出内部服务异常
 	_ = errors.New("内部服务错误")
 )
-
