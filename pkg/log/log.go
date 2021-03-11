@@ -11,40 +11,47 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var logger = NewLogger(Config{})
+var logger = NewLogger(Development())
 
 func GetLogger() *Loggers {
 	return logger
-}
-
-func SetLogConfig(logConfig Config) {
-	logger = NewLogger(logConfig)
-}
-
-type Config struct {
-	ENV     string
-	LogPath string
 }
 
 type Loggers struct {
 	zapLog *zap.Logger
 }
 
-func NewLogger(logConfig Config) *Loggers {
-	if logConfig.ENV == "" {
-		logConfig.ENV = consts.DefaultEnvLocal
-	}
-	if logConfig.LogPath == "" {
-		logConfig.LogPath = consts.DefaultLogPath
-	}
-	logFile := []string{"stdout"}
-	if logConfig.ENV != consts.DefaultEnvLocal {
-		logFile = []string{logConfig.LogPath}
-	}
+// An Option configures a Logger.
+type Option interface {
+	apply(cfg *zap.Config)
+}
+
+type optionFunc func(cfg *zap.Config)
+
+func (f optionFunc) apply(cfg *zap.Config) {
+	f(cfg)
+}
+
+func Development() Option {
+	return optionFunc(func(cfg *zap.Config) {
+		cfg.OutputPaths = []string{consts.DefaultLogStdout}
+		cfg.ErrorOutputPaths = []string{consts.DefaultLogStdout}
+	})
+}
+
+func Production() Option {
+	return optionFunc(func(cfg *zap.Config) {
+		cfg.OutputPaths = []string{consts.DefaultLogPath}
+		cfg.ErrorOutputPaths = []string{consts.DefaultLogPath}
+	})
+}
+
+func NewLogger(opts ...Option) *Loggers {
 	cfg := zap.NewProductionConfig()
+	for _, opt := range opts {
+		opt.apply(&cfg)
+	}
 	cfg.Encoding = "console"
-	cfg.OutputPaths = logFile
-	cfg.ErrorOutputPaths = logFile
 	cfg.EncoderConfig.EncodeTime = TimeEncoder
 	cfg.EncoderConfig.EncodeLevel = LevelEncoder
 	cfg.EncoderConfig.EncodeCaller = zapcore.FullCallerEncoder

@@ -35,11 +35,11 @@ func NewServer(cf Config, opt ...grpc.ServerOption) *Server {
 		grpczap.StreamServerInterceptor(log.GetLogger().GetZapLog())),
 	)
 	keepParam := grpc.KeepaliveParams(keepalive.ServerParameters{
-		MaxConnectionIdle:     s.Config.IdleTimeout,
-		MaxConnectionAgeGrace: s.Config.ForceCloseWait,
+		MaxConnectionIdle:     s.Config.MaxConnectionIdle,
+		MaxConnectionAgeGrace: s.Config.MaxConnectionAgeGrace,
 		Time:                  s.Config.KeepAliveInterval,
 		Timeout:               s.Config.KeepAliveTimeout,
-		MaxConnectionAge:      s.Config.MaxLifeTime,
+		MaxConnectionAge:      s.Config.MaxConnectionAge,
 	})
 	opt = append(opt, keepParam)
 	grpcServer := grpc.NewServer(opt...)

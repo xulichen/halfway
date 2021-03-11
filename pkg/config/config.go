@@ -14,7 +14,7 @@ import (
 
 // InitViper 初始化viper
 func InitViper(configFilePath string) {
-	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
+	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
 		configMap := NewConfigMap(consts.DefaultBaseConfigDir)
 		BuildConfigFile(configMap, configFilePath)
 	}

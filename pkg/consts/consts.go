@@ -8,4 +8,5 @@ const (
 	DefaultEnvBeta       = "beta"
 	DefaultEnvOnline     = "online"
 	DefaultLogPath       = "/var/log/default.log"
+	DefaultLogStdout     = "stdout"
 )
