@@ -5,10 +5,10 @@
 
 ## Features
 - HTTP Server：基于[echo](https://github.com/labstack/echo)框架设计，集成 
-  限流 熔断 请求日志 中文验证器 等中间件， 参考[jupiter](https://github.com/douyu/jupiter)GRPCProxyWrapper封装grpc.UnaryHandler转化为echo.HandleFunc
-- RPC Server：基于官方gRPC开发，集成discovery模块支持服务发现功能，，基于[gogo/protobuf](https://github.com/gogo/protobuf)生成pb.go文件；
+  限流 熔断 请求日志 中文验证器 等中间件， 参考[jupiter](https://github.com/douyu/jupiter).GRPCProxyWrapper封装grpc.UnaryHandler转化为echo.HandleFunc；
+- RPC Server：基于官方gRPC开发，集成discovery模块支持服务发现功能，基于[gogo/protobuf](https://github.com/gogo/protobuf)生成pb.go文件；
 - Cache：Redis封装[go-redis](https://github.com/go-redis/redis/v8)框架；
-- DB：Mysql采用[gorm](https://gorm.io)框架，Tidb，Hbase还待开发；
+- DB：Mysql采用[gorm](https://gorm.io)框架，ES，Tidb，Hbase还待开发；
 - Config：采用[viper](https://github.com/spf13/viper)，配合consul可配合远程配置中心，实现配置版本管理和更新；
 - Log：采用[zap](https://github.com/uber-go/zap)的field实现高性能日志库，并结合 filebeat elk 实现远程日志管理；
 - 全链路trace基于[elastic APM](https://www.elastic.co/guide/en/apm/agent/go/current/index.html)，支持(gRPC/HTTP/MySQL/Redis)，集群接入linkerd服务网格化后逐步替换；
@@ -17,7 +17,7 @@
 https://github.com/xulichen/halfway_demo
 
 
-## Project Structure Tree
+## File Structure
 ```text
 ├── README.md
 ├── doc

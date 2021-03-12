@@ -1,0 +1,24 @@
+# TODO transform to .travis.yml 快速开始：http://www.ruanyifeng.com/blog/2017/12/travis_ci_tutorial.html
+image: golang:1.15.10-alpine
+
+stage:
+  - before_commit
+  - after_commit
+
+before_script:
+  - echo "before_script"
+  - go env -w GOPRIVATE=hi.hxxbaby.com
+  - go version
+  - go env -w GO111MODULE=on
+  - go env -w GOPROXY="https://goproxy.cn,direct"
+
+golint:
+  stage: before_commit
+  script:
+    - go get -u golang.org/x/lint/golint
+    - golint .
+
+unit_test:
+  stage: before_commit
+  script:
+    - go test .
