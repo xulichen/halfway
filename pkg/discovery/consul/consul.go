@@ -24,17 +24,21 @@ type Resource struct {
 
 // @todo 讲依赖声明加到初始化的地方
 // New returns the point of ConsulResource
-func New(c1 *discovery.ServerConfig, c2 *discovery.ServiceConfig) (*Resource, error) {
+func New(cfg *discovery.ServerConfig) (*Resource, error) {
 	consulConfig := &api.Config{
-		Address: fmt.Sprintf("%s:%d", c1.Address, c1.Port),
-		Token:   c1.Token,
+		Address: fmt.Sprintf("%s:%d", cfg.Address, cfg.Port),
+		Token:   cfg.Token,
 	}
 	client, err := api.NewClient(consulConfig)
 	if err != nil {
 		return nil, errors.New(
-			fmt.Sprintf("NewClient consul error\t%v \t address : %s", err, c1.Address))
+			fmt.Sprintf("NewClient consul error\t%v \t address : %s", err, cfg.Address))
 	}
-	return &Resource{consulClient: client, serverConf: c1, serviceConf: c2}, nil
+	return &Resource{consulClient: client, serverConf: cfg}, nil
+}
+
+func (cr *Resource) WithServiceConfig(cfg *discovery.ServiceConfig) {
+	cr.serviceConf = cfg
 }
 
 // RegisterService 注册服务
@@ -47,22 +51,22 @@ func (cr *Resource) RegisterService() error {
 	if cr.serviceConf.IsRPC {
 		check = &api.AgentServiceCheck{ // 健康检查
 			Interval:                       interval.String(),              // 健康检查间隔
-			GRPC:                           cr.serviceConf.HealthyCheckURL, //
+			GRPC:                           cr.serviceConf.HealthyCheckURL, // 健康检查地址
 			DeregisterCriticalServiceAfter: deregister.String(),            // 注销时间，相当于过期时间
 		}
 	} else {
 		check = &api.AgentServiceCheck{ // 健康检查
 			Interval:                       interval.String(),              // 健康检查间隔
-			HTTP:                           cr.serviceConf.HealthyCheckURL, //
+			HTTP:                           cr.serviceConf.HealthyCheckURL, // 健康检查地址
 			DeregisterCriticalServiceAfter: deregister.String(),            // 注销时间，相当于过期时间
 		}
 	}
 	reg := &api.AgentServiceRegistration{
-		ID:      fmt.Sprintf("%s-%s", string(cr.serviceConf.Name), cr.serviceConf.IP), // 服务节点的名称
-		Name:    cr.serviceConf.Name,                                                  // 服务名称
-		Tags:    cr.serviceConf.Tag,                                                   // tag，可以为空
-		Port:    cr.serviceConf.Port,                                                  // 服务端口
-		Address: cr.serviceConf.IP,                                                    // 服务 IP
+		ID:      fmt.Sprintf("%s-%s", cr.serviceConf.Name, cr.serviceConf.IP), // 服务节点的名称
+		Name:    cr.serviceConf.Name,                                          // 服务名称
+		Tags:    cr.serviceConf.Tag,                                           // tag，可以为空
+		Port:    cr.serviceConf.Port,                                          // 服务端口
+		Address: cr.serviceConf.IP,                                            // 服务 IP
 		Check:   check,
 	}
 	if err := agent.ServiceRegister(reg); err != nil {
@@ -77,7 +81,7 @@ func (cr *Resource) DeregisterService() error {
 	if agent == nil {
 		return errors.New("fail get consul client agent()")
 	}
-	return cr.consulClient.Agent().ServiceDeregister(fmt.Sprintf("%s-%s", string(cr.serviceConf.Name), cr.serviceConf.IP))
+	return cr.consulClient.Agent().ServiceDeregister(fmt.Sprintf("%s-%s", cr.serviceConf.Name, cr.serviceConf.IP))
 }
 
 // ClaimServices 声明依赖的服务
