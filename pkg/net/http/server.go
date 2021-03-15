@@ -12,10 +12,12 @@ type Server struct {
 	*echo.Echo
 }
 
-func NewServer(cf *Config) *Server {
+func NewServer(cf *Config, middlewareFunc ...echo.MiddlewareFunc) *Server {
+	defaultMiddlewareSlice := []echo.MiddlewareFunc{middleware.Recover(), middleware.Logger(), apmechov4.Middleware()}
+	newMiddleware := append(defaultMiddlewareSlice, middlewareFunc...)
 	server := echo.New()
 	middleware.InitValidate(server)
-	server.Use(middleware.Recover(), middleware.Logger(), apmechov4.Middleware())
+	server.Use(newMiddleware...)
 	return &Server{
 		Config: cf,
 		Echo:   server,
@@ -32,6 +34,6 @@ func (s *Server) Stop() error {
 }
 
 // GracefulStop 优雅退出
-func (s *Server) GracefulStop(ctx context.Context) error {
-	return s.Echo.Shutdown(ctx)
+func (s *Server) GracefulStop() error {
+	return s.Echo.Shutdown(context.Background())
 }
