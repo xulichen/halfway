@@ -6,8 +6,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
-	l "github.com/xulichen/halfway/pkg/log"
+	echoLog "github.com/labstack/gommon/log"
+	"github.com/xulichen/halfway/pkg/log"
 	"github.com/xulichen/halfway/pkg/utils"
 )
 
@@ -32,7 +32,7 @@ type (
 
 		// LogLevel is log level to printing stack trace.
 		// Optional. Default value 0 (Print).
-		LogLevel log.Lvl
+		LogLevel echoLog.Lvl
 	}
 )
 
@@ -85,18 +85,18 @@ func RecoverWithConfig(config *RecoverConfig) echo.MiddlewareFunc {
 						msg := fmt.Sprintf("[PANIC RECOVER] %v %s\n", err, stack[:length])
 						_ = utils.SendDingMsgWithUrl(errNotifyUrl, msg, true)
 						switch config.LogLevel {
-						case log.DEBUG:
-							l.GetLogger().Debug(msg)
-						case log.INFO:
-							l.GetLogger().Info(msg)
-						case log.WARN:
-							l.GetLogger().Warn(msg)
-						case log.ERROR:
-							l.GetLogger().Error(msg)
-						case log.OFF:
+						case echoLog.DEBUG:
+							log.GetLogger().Debug(msg)
+						case echoLog.INFO:
+							log.GetLogger().Info(msg)
+						case echoLog.WARN:
+							log.GetLogger().Warn(msg)
+						case echoLog.ERROR:
+							log.GetLogger().Error(msg)
+						case echoLog.OFF:
 							// None.
 						default:
-							l.GetLogger().Print(msg)
+							log.GetLogger().Print(msg)
 						}
 					}
 					c.Error(err)
