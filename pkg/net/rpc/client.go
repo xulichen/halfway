@@ -23,8 +23,7 @@ func DialWithConsul(cr consul.Resource, service string) *grpc.ClientConn {
 
 // Dial 客户端直连服务端... 需配合linkerd或istio做负载均衡
 func Dial(serviceAddr string, options ...grpc.DialOption) (*grpc.ClientConn, error) {
-	options = append(options, grpc.WithInsecure())
-	options = append(options, grpc.WithUnaryInterceptor(apmgrpc.NewUnaryClientInterceptor()))
+	options = append(options, grpc.WithInsecure(), grpc.WithUnaryInterceptor(apmgrpc.NewUnaryClientInterceptor()))
 
 	conn, err := grpc.Dial(
 		fmt.Sprintf("%s://%s", "tcp", serviceAddr),
