@@ -15,7 +15,7 @@
 - Log：采用[zap](https://github.com/uber-go/zap)的field实现高性能日志库，并结合 filebeat elk 实现远程日志管理；
 - 全链路trace基于[elastic APM](https://www.elastic.co/guide/en/apm/agent/go/current/index.html)，支持(gRPC/HTTP/MySQL/Redis)，集群接入linkerd服务网格化后逐步替换；
 
-## Demo Site
+## Demo Server
 https://github.com/xulichen/halfway_demo
 
 
