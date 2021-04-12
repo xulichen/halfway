@@ -3,14 +3,21 @@ package consul
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"strconv"
 	"sync"
 	"time"
 
+	"github.com/spf13/viper"
+
 	"github.com/hashicorp/consul/api"
 	"google.golang.org/grpc/resolver"
 )
+
+const defaultSize = 50
+
+var defaultSeed = time.Now().UnixNano()
 
 // InitResolver returns
 func InitResolver(host string, port int, token string, serviceName string) {
@@ -34,6 +41,7 @@ type consulResolver struct {
 	name                 string
 	disableServiceConfig bool
 	Ch                   chan int
+	subsetSize           int
 }
 
 // NewBuilder ...
@@ -42,6 +50,10 @@ func NewBuilder(h string, p int, t string, sn string) resolver.Builder {
 }
 
 func (cb *consulBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+	subsetSize := viper.GetInt("subsetSize")
+	if subsetSize == 0 {
+		subsetSize = defaultSize
+	}
 	cr := &consulResolver{
 		address:              fmt.Sprintf("%s:%d", cb.host, cb.port),
 		token:                cb.token,
@@ -49,6 +61,7 @@ func (cb *consulBuilder) Build(target resolver.Target, cc resolver.ClientConn, o
 		cc:                   cc,
 		disableServiceConfig: opts.DisableServiceConfig,
 		Ch:                   make(chan int, 0),
+		subsetSize:           subsetSize,
 	}
 	go cr.watcher()
 	return cr, nil
@@ -97,6 +110,12 @@ func (cr *consulResolver) watcher() {
 				//type：不能是grpclib，grpclib在处理链接时会删除最后一个链接地址，不用设置即可 详见=> balancer_conn_wrappers => updateClientConnState
 				ServerName: service.Service.Service,
 			})
+		}
+		// 如何地址长度大于subsetSize 取地址集合的子集
+		if len(newAddrs) > cr.subsetSize {
+			rand.Seed(defaultSeed)
+			rand.Shuffle(len(newAddrs), func(i, j int) { newAddrs[i], newAddrs[j] = newAddrs[j], newAddrs[i] })
+			newAddrs = newAddrs[:cr.subsetSize]
 		}
 		cr.cc.UpdateState(resolver.State{Addresses: newAddrs})
 	}

@@ -94,7 +94,7 @@ func (cr *Resource) ClaimServices(dependServices []string) bool {
 
 // @todo 设置成单例子？看 gRPC client 代码实现是否处理过了。
 // DialService sign off from consul by defined serviceID
-func (cr Resource) Dial(service string) (*grpc.ClientConn, error) {
+func (cr *Resource) Dial(service string) (*grpc.ClientConn, error) {
 	//@todo 判断是否声明过依赖
 	conn, err := grpc.Dial(
 		fmt.Sprintf("%s://%s:%d/%s", "consul",
