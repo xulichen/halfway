@@ -106,7 +106,9 @@ func (cr *Resource) Dial(service string) (*grpc.ClientConn, error) {
 		//grpc.WithBlock(),
 		grpc.WithInsecure(),
 		//指定初始化round_robin => balancer (后续可以自行定制balancer和 register、resolver 同样的方式)
-		grpc.WithDefaultServiceConfig(`{"LoadBalancingPolicy":"round_robin"}`),
+		//grpc.WithDefaultServiceConfig(`{"LoadBalancingPolicy":"color_round_robin"}`),
+		// grpc.WithBalancerName 1.x 会被remove掉
+		grpc.WithBalancerName("color_round_robin"),
 		grpc.WithUnaryInterceptor(apmgrpc.NewUnaryClientInterceptor()),
 	)
 	if err != nil {
