@@ -2,14 +2,14 @@ package discovery
 
 // ServiceConfig 需要注册的服务配置
 type ServiceConfig struct {
-	IP   string
-	Port int
-	Tag  []string
-	Name string
-	ID   string
-	//HealthyCheckURL   健康检查的 URL
-	HealthyCheckURL string
+	IP              string
+	Port            int
+	Tags            []string
+	Name            string
+	ID              string
+	HealthyCheckURL string //HealthyCheckURL   健康检查的 URL
 	IsRPC           bool
+	Meta            map[string]string
 }
 
 // ServerConfig Discovery服务配置
