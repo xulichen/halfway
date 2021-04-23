@@ -64,10 +64,11 @@ func (cr *Resource) RegisterService() error {
 	reg := &api.AgentServiceRegistration{
 		ID:      fmt.Sprintf("%s-%s", cr.serviceConf.Name, cr.serviceConf.IP), // 服务节点的名称
 		Name:    cr.serviceConf.Name,                                          // 服务名称
-		Tags:    cr.serviceConf.Tag,                                           // tag，可以为空
+		Tags:    cr.serviceConf.Tags,                                          // tag，可以为空
 		Port:    cr.serviceConf.Port,                                          // 服务端口
 		Address: cr.serviceConf.IP,                                            // 服务 IP
 		Check:   check,
+		Meta:    cr.serviceConf.Meta,
 	}
 	if err := agent.ServiceRegister(reg); err != nil {
 		return errors.New(fmt.Sprintf("Service Register error : %v", err))

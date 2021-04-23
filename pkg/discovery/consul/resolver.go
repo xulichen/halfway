@@ -2,6 +2,7 @@ package consul
 
 import (
 	"fmt"
+	"google.golang.org/grpc/attributes"
 	"log"
 	"math/rand"
 	"net"
@@ -105,10 +106,12 @@ func (cr *consulResolver) watcher() {
 		newAddrs := make([]resolver.Address, 0)
 		for _, service := range services {
 			addr := net.JoinHostPort(service.Service.Address, strconv.Itoa(service.Service.Port))
+			color, _ := service.Service.Meta["color"]
 			newAddrs = append(newAddrs, resolver.Address{
 				Addr: addr,
 				//type：不能是grpclib，grpclib在处理链接时会删除最后一个链接地址，不用设置即可 详见=> balancer_conn_wrappers => updateClientConnState
 				ServerName: service.Service.Service,
+				Attributes: attributes.New("color", color),
 			})
 		}
 		// 如何地址长度大于subsetSize 取地址集合的子集
