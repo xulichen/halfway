@@ -1,4 +1,4 @@
-package wrr
+package rr
 
 import (
 	"sync"
@@ -9,10 +9,10 @@ import (
 )
 
 // Name is the name of round_robin balancer.
-const Name = "round_robin"
+const Name = "color_round_robin"
 
 var (
-	logger = grpclog.Component("roundrobin")
+	logger = grpclog.Component("colorroundrobin")
 )
 
 // newBuilder creates a new roundrobin balancer builder.
